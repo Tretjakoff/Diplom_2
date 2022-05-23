@@ -7,7 +7,7 @@ import static io.restassured.RestAssured.given;
 public class Requests extends RestAssuredClient {
 
     @Step("Send POST request to /api/auth/register")
-    public Response createCourier(User user){
+    public Response createUser(User user){
         return given()
                 .spec(getBaseSpec())
                 .header("Content-type", "application/json")
@@ -15,5 +15,14 @@ public class Requests extends RestAssuredClient {
                 .body(user)
                 .when()
                 .post("api/auth/register");
+    }
+
+    @Step("Send DELETE request to /api/auth/user")
+    public Response deleteUser(String bearerToken){
+        return given()
+                .spec(getBaseSpec())
+                .auth().oauth2(bearerToken)
+                .when()
+                .delete("api/auth/user");
     }
 }
