@@ -1,6 +1,7 @@
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import model.Login;
+import model.PersonalData;
 import model.User;
 
 import static io.restassured.RestAssured.given;
@@ -29,6 +30,18 @@ public class Requests extends RestAssuredClient {
                 .post("api/auth/login");
     }
 
+    @Step("Send PATCH request to /api/auth/user")
+    public Response changingUserData(PersonalData personalData, String bearerToken){
+        return given()
+                .spec(getBaseSpec())
+                .auth().oauth2(bearerToken)
+                .header("Content-type", "application/json")
+                .and()
+                .body(personalData)
+                .when()
+                .patch("api/auth/user");
+    }
+
     @Step("Send DELETE request to /api/auth/user")
     public Response deleteUser(String bearerToken){
         return given()
@@ -37,4 +50,5 @@ public class Requests extends RestAssuredClient {
                 .when()
                 .delete("api/auth/user");
     }
+
 }
