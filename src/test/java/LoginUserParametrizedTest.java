@@ -6,7 +6,6 @@ import model.User;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -43,7 +42,7 @@ public class LoginUserParametrizedTest {
         Response response = new Requests().createUser(new User("myname@yandex.ru", "qwerty", "Myname"));
         response.then().assertThat()
                 .statusCode(200);
-        if(response.statusCode() == 200) {
+        if (response.statusCode() == 200) {
             bearerToken = response.jsonPath().getString("accessToken").replace("Bearer ", "");
         }
     }
@@ -60,15 +59,15 @@ public class LoginUserParametrizedTest {
     @Test
     @DisplayName("Login user and check response")
     @Description("Parameterized test for /api/auth/login")
-    public void loginUserTest(){
+    public void loginUserTest() {
 
         Response response = new Requests().loginUser(login);
         response.then().assertThat()
                 .statusCode(statusCode);
-        if(response.statusCode() != 200) {
+        if (response.statusCode() != 200) {
             response.then().assertThat()
                     .body("message", Matchers.is("email or password are incorrect"));
-                }
+        }
 
 
     }

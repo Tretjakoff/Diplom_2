@@ -3,7 +3,9 @@ import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import model.User;
 import org.hamcrest.Matchers;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -18,12 +20,12 @@ public class CreateUserParametrizedTest {
     public static Object[][] getNewUserData() {
         return new Object[][]{
                 {new User("diplom@yandex.ru", "qwerty", "Diplom"), "User already exists"},
-                {new User("", "qwerty", "Diplom"),  "Email, password and name are required fields"},
-                {new User("diplom@yandex.ru", "", "Diplom"),  "Email, password and name are required fields"},
-                {new User("diplom@yandex.ru", "qwerty", ""),  "Email, password and name are required fields"},
-                {new User(null, "qwerty", "Diplom"),  "Email, password and name are required fields"},
-                {new User("diplom@yandex.ru", null, "Diplom"),  "Email, password and name are required fields"},
-                {new User("diplom@yandex.ru", "qwerty", null),  "Email, password and name are required fields"},
+                {new User("", "qwerty", "Diplom"), "Email, password and name are required fields"},
+                {new User("diplom@yandex.ru", "", "Diplom"), "Email, password and name are required fields"},
+                {new User("diplom@yandex.ru", "qwerty", ""), "Email, password and name are required fields"},
+                {new User(null, "qwerty", "Diplom"), "Email, password and name are required fields"},
+                {new User("diplom@yandex.ru", null, "Diplom"), "Email, password and name are required fields"},
+                {new User("diplom@yandex.ru", "qwerty", null), "Email, password and name are required fields"},
         };
     }
 
@@ -37,7 +39,7 @@ public class CreateUserParametrizedTest {
         Response response = new Requests().createUser(new User("diplom@yandex.ru", "qwerty", "Diplom"));
         response.then().assertThat()
                 .statusCode(200);
-        if(response.statusCode() == 200) {
+        if (response.statusCode() == 200) {
             bearerToken = response.jsonPath().getString("accessToken").replace("Bearer ", "");
         }
     }
@@ -55,7 +57,7 @@ public class CreateUserParametrizedTest {
     @Test
     @DisplayName("Create user and check response")
     @Description("Parameterized test for /api/auth/register")
-    public void createUserTest(){
+    public void createUserTest() {
 
         Response response = new Requests().createUser(user);
         response.then().assertThat()

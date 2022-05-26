@@ -13,7 +13,6 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class ChangingUserDataParametrizedTest {
     private final PersonalData personalData;
-    // private final String message;
     private static String bearerToken;
     Integer id;
 
@@ -69,7 +68,7 @@ public class ChangingUserDataParametrizedTest {
     }
 
     @Test
-    @DisplayName("Changing user data check response without authorization")
+    @DisplayName("Changing user data and check response without authorization")
     @Description("Parameterized test for /api/auth/user")
     public void changingUserDataWithoutAuthTest() {
         Response response = new Requests().changingUserData(personalData, "");
