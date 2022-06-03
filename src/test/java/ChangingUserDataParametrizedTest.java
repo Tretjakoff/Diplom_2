@@ -9,12 +9,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import static org.apache.http.HttpStatus.*;
 
 @RunWith(Parameterized.class)
 public class ChangingUserDataParametrizedTest {
     private final PersonalData personalData;
     private static String bearerToken;
-    Integer id;
 
     @Parameterized.Parameters
     public static Object[][] getNewUserData() {
@@ -35,9 +35,9 @@ public class ChangingUserDataParametrizedTest {
 
     @Before
     public void createNewUser() {
-        Response response = new Requests().createUser(new User("diplom@yandex.ru", "qwerty", "Diplom"));
+        Response response = new RequestsUser().createUser(new User("diplom@yandex.ru", "qwerty", "Diplom"));
         response.then().assertThat()
-                .statusCode(200);
+                .statusCode(SC_OK);
         if (response.statusCode() == 200) {
             bearerToken = response.jsonPath().getString("accessToken").replace("Bearer ", "");
         }
@@ -45,9 +45,9 @@ public class ChangingUserDataParametrizedTest {
 
     @After
     public void cleanUp() throws InterruptedException {
-        Response response = new Requests().deleteUser(bearerToken);
+        Response response = new RequestsUser().deleteUser(bearerToken);
         response.then().assertThat()
-                .statusCode(202)
+                .statusCode(SC_ACCEPTED)
                 .body("message", Matchers.is("User successfully removed"));
         Thread.sleep(1000);
     }
@@ -57,7 +57,7 @@ public class ChangingUserDataParametrizedTest {
     @DisplayName("Changing user data and check response")
     @Description("Parameterized test for /api/auth/user")
     public void changingUserDataTest() {
-        Response response = new Requests().changingUserData(personalData, bearerToken);
+        Response response = new RequestsUser().changingUserData(personalData, bearerToken);
         if (response.statusCode() == 200) {
             response.then().assertThat()
                     .body("success", Matchers.is(true));
@@ -71,7 +71,7 @@ public class ChangingUserDataParametrizedTest {
     @DisplayName("Changing user data and check response without authorization")
     @Description("Parameterized test for /api/auth/user")
     public void changingUserDataWithoutAuthTest() {
-        Response response = new Requests().changingUserData(personalData, "");
+        Response response = new RequestsUser().changingUserData(personalData, "");
         response.then().assertThat()
                 .body("message", Matchers.is("You should be authorised"));
     }

@@ -9,13 +9,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import static org.apache.http.HttpStatus.*;
 
 @RunWith(Parameterized.class)
 public class LoginUserParametrizedTest {
     private final Login login;
     private final Integer statusCode;
     private String bearerToken;
-    Integer id;
 
 
     @Parameterized.Parameters
@@ -39,9 +39,9 @@ public class LoginUserParametrizedTest {
 
     @Before
     public void createNewUser() {
-        Response response = new Requests().createUser(new User("myname@yandex.ru", "qwerty", "Myname"));
+        Response response = new RequestsUser().createUser(new User("myname@yandex.ru", "qwerty", "Myname"));
         response.then().assertThat()
-                .statusCode(200);
+                .statusCode(SC_OK);
         if (response.statusCode() == 200) {
             bearerToken = response.jsonPath().getString("accessToken").replace("Bearer ", "");
         }
@@ -49,9 +49,9 @@ public class LoginUserParametrizedTest {
 
     @After
     public void cleanUp() throws InterruptedException {
-        Response response = new Requests().deleteUser(bearerToken);
+        Response response = new RequestsUser().deleteUser(bearerToken);
         response.then().assertThat()
-                .statusCode(202)
+                .statusCode(SC_ACCEPTED)
                 .body("message", Matchers.is("User successfully removed"));
         Thread.sleep(1000);
     }
@@ -61,7 +61,7 @@ public class LoginUserParametrizedTest {
     @Description("Parameterized test for /api/auth/login")
     public void loginUserTest() {
 
-        Response response = new Requests().loginUser(login);
+        Response response = new RequestsUser().loginUser(login);
         response.then().assertThat()
                 .statusCode(statusCode);
         if (response.statusCode() != 200) {

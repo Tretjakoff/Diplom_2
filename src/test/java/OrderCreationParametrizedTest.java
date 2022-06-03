@@ -10,12 +10,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import static org.apache.http.HttpStatus.*;
 
 import java.util.Arrays;
 
 @RunWith(Parameterized.class)
 public class OrderCreationParametrizedTest {
-    private static final Requests requests = new Requests();
+    private static final RequestsOrder requests = new RequestsOrder();
     private final Order order;
     private final Integer statusCode;
     private static String bearerToken;
@@ -40,9 +41,9 @@ public class OrderCreationParametrizedTest {
 
     @Before
     public void createNewUser() {
-        Response response = new Requests().createUser(new User("myname@yandex.ru", "qwerty", "Myname"));
+        Response response = new RequestsUser().createUser(new User("myname@yandex.ru", "qwerty", "Myname"));
         response.then().assertThat()
-                .statusCode(200);
+                .statusCode(SC_OK);
         if (response.statusCode() == 200) {
             bearerToken = response.jsonPath().getString("accessToken").replace("Bearer ", "");
         }
@@ -50,18 +51,18 @@ public class OrderCreationParametrizedTest {
 
     @After
     public void cleanUp() throws InterruptedException {
-        Response response = new Requests().deleteUser(bearerToken);
+        Response response = new RequestsUser().deleteUser(bearerToken);
         response.then().assertThat()
-                .statusCode(202)
+                .statusCode(SC_ACCEPTED)
                 .body("message", Matchers.is("User successfully removed"));
-        Thread.sleep(3000);
+        Thread.sleep(5000);
     }
 
     @Test
     @DisplayName("Order creation and check response")
     @Description("Parameterized test for /api/orders")
     public void changingUserDataTest() {
-        Response response = new Requests().orderCreation(order, bearerToken);
+        Response response = new RequestsOrder().orderCreation(order, bearerToken);
         response.then().assertThat()
                 .statusCode(statusCode);
         if (response.statusCode() == 200) {
@@ -80,7 +81,7 @@ public class OrderCreationParametrizedTest {
     @DisplayName("Order creation and check response without authorization")
     @Description("Parameterized test for /api/orders")
     public void changingUserDataWithoutAuthTest() {
-        Response response = new Requests().orderCreation(order, "");
+        Response response = new RequestsOrder().orderCreation(order, "");
         response.then().assertThat()
                 .statusCode(statusCode);
         if (response.statusCode() == 200) {
