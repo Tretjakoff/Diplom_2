@@ -18,7 +18,7 @@ public class LoginUserParametrizedTest {
     private String bearerToken;
 
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "login, statusCode: {0} {1}")
     public static Object[][] getNewUserData() {
         return new Object[][]{
                 {new Login("myname@yandex.ru", "qwerty"), 200},

@@ -16,7 +16,7 @@ public class CreateUserParametrizedTest {
     private final String message;
     private static String bearerToken;
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "user, message: {0} {1}")
     public static Object[][] getNewUserData() {
         return new Object[][]{
                 {new User("diplom@yandex.ru", "qwerty", "Diplom"), "User already exists"},

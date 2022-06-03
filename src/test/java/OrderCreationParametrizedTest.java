@@ -21,7 +21,7 @@ public class OrderCreationParametrizedTest {
     private final Integer statusCode;
     private static String bearerToken;
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "order, statusCode: {0} {1}")
     public static Object[][] getNewUserData() {
         return new Object[][]{
                 {new Order(Arrays.asList(requests.returnIngredients().get(0), requests.returnIngredients().get(1))), 200},

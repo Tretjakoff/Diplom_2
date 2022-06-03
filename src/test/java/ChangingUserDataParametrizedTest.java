@@ -16,7 +16,7 @@ public class ChangingUserDataParametrizedTest {
     private final PersonalData personalData;
     private static String bearerToken;
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "Тестовые данные: {0} {1}")
     public static Object[][] getNewUserData() {
         return new Object[][]{
                 {new PersonalData("monday@yandex.ru", "Monday")},
